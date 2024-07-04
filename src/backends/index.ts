@@ -3,10 +3,10 @@ import RedisBackend from "./redis";
 import AMQPBackend from "./amqp";
 
 export interface CeleryBackend {
-  isReady: () => Promise<any>;
-  disconnect: () => Promise<any>;
-  storeResult: (taskId: string, result: any, state: string) => Promise<any>;
-  getTaskMeta: (taskId: string) => Promise<object>;
+	isReady: () => Promise<any>;
+	disconnect: () => Promise<any>;
+	storeResult: (taskId: string, result: any, state: string) => Promise<any>;
+	getTaskMeta: (taskId: string) => Promise<object>;
 }
 
 /**
@@ -25,11 +25,11 @@ const supportedProtocols = ["redis", "rediss", "amqp", "amqps"];
  * @throws {Error} when url has unsupported protocols
  */
 function getProtocol(uri: string): string {
-  const protocol = url.parse(uri).protocol.slice(0, -1);
-  if (supportedProtocols.indexOf(protocol) === -1) {
-    throw new Error(`Unsupported type: ${protocol}`);
-  }
-  return protocol;
+	const protocol = url.parse(uri).protocol.slice(0, -1);
+	if (supportedProtocols.indexOf(protocol) === -1) {
+		throw new Error(`Unsupported type: ${protocol}`);
+	}
+	return protocol;
 }
 
 /**
@@ -39,18 +39,18 @@ function getProtocol(uri: string): string {
  * @returns {CeleryBackend}
  */
 export function newCeleryBackend(
-  CELERY_BACKEND: string,
-  CELERY_BACKEND_OPTIONS: object
+	CELERY_BACKEND: string,
+	CELERY_BACKEND_OPTIONS: object
 ): CeleryBackend {
-  const brokerProtocol = getProtocol(CELERY_BACKEND);
-  if (['redis', 'rediss'].indexOf(brokerProtocol) > -1) {
-    return new RedisBackend(CELERY_BACKEND, CELERY_BACKEND_OPTIONS);
-  }
+	const brokerProtocol = getProtocol(CELERY_BACKEND);
+	if (["redis", "rediss"].indexOf(brokerProtocol) > -1) {
+		return new RedisBackend(CELERY_BACKEND, CELERY_BACKEND_OPTIONS);
+	}
 
-  if (['amqp', 'amqps'].indexOf(brokerProtocol) > -1) {
-    return new AMQPBackend(CELERY_BACKEND, CELERY_BACKEND_OPTIONS);
-  }
+	if (["amqp", "amqps"].indexOf(brokerProtocol) > -1) {
+		return new AMQPBackend(CELERY_BACKEND, CELERY_BACKEND_OPTIONS);
+	}
 
-  // do not reach here.
-  throw new Error("unsupprted celery backend");
+	// do not reach here.
+	throw new Error("unsupprted celery backend");
 }

@@ -77,7 +77,7 @@ export class AsyncResult {
           }
         });
       });
-      
+
       this._cache = p;
     }
 

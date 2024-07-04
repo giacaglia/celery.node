@@ -4,54 +4,54 @@ import Task from "./task";
 import { AsyncResult } from "./result";
 
 class TaskMessage {
-  constructor(
-    readonly headers: object,
-    readonly properties: object,
-    readonly body: [Array<any>, object, object] | object,
-    readonly sentEvent: object
-  ) {}
+	constructor(
+		readonly headers: object,
+		readonly properties: object,
+		readonly body: [Array<any>, object, object] | object,
+		readonly sentEvent: object
+	) {}
 }
 
 export default class Client extends Base {
-  private taskProtocols = {
-    1: this.asTaskV1,
-    2: this.asTaskV2
-  };
+	private taskProtocols = {
+		1: this.asTaskV1,
+		2: this.asTaskV2,
+	};
 
-  get createTaskMessage(): (...args: any[]) => TaskMessage {
-    return this.taskProtocols[this.conf.TASK_PROTOCOL];
-  }
+	get createTaskMessage(): (...args: any[]) => TaskMessage {
+		return this.taskProtocols[this.conf.TASK_PROTOCOL];
+	}
 
-  public sendTaskMessage(taskName: string, message: TaskMessage): void {
-    const { headers, properties, body /*, sentEvent */ } = message;
+	public sendTaskMessage(taskName: string, message: TaskMessage): void {
+		const { headers, properties, body /*, sentEvent */ } = message;
 
-    const exchange = "";
-    // exchangeType = 'direct';
-    // const serializer = 'json';
+		const exchange = "";
+		// exchangeType = 'direct';
+		// const serializer = 'json';
 
-    this.isReady().then(() =>
-      this.broker.publish(
-        body,
-        exchange,
-        this.conf.CELERY_QUEUE,
-        headers,
-        properties
-      )
-    );
-  }
+		this.isReady().then(() =>
+			this.broker.publish(
+				body,
+				exchange,
+				this.conf.CELERY_QUEUE,
+				headers,
+				properties
+			)
+		);
+	}
 
-  public asTaskV2(
-    taskId: string,
-    taskName: string,
-    args?: Array<any>,
-    kwargs?: object
-  ): TaskMessage {
-    const message: TaskMessage = {
-      headers: {
-        lang: "js",
-        task: taskName,
-        id: taskId
-        /*
+	public asTaskV2(
+		taskId: string,
+		taskName: string,
+		args?: Array<any>,
+		kwargs?: object
+	): TaskMessage {
+		const message: TaskMessage = {
+			headers: {
+				lang: "js",
+				task: taskName,
+				id: taskId,
+				/*
         'shadow': shadow,
         'eta': eta,
         'expires': expires,
@@ -64,85 +64,97 @@ export default class Client extends Base {
         'kwargsrepr': kwargsrepr,
         'origin': origin or anon_nodename()
         */
-      },
-      properties: {
-        correlationId: taskId,
-        replyTo: ""
-      },
-      body: [args, kwargs, {}],
-      sentEvent: null
-    };
+			},
+			properties: {
+				correlationId: taskId,
+				replyTo: "",
+			},
+			body: [args, kwargs, {}],
+			sentEvent: null,
+		};
 
-    return message;
-  }
+		return message;
+	}
 
-  /**
-   * create json string representing celery task message. used by Client.publish
-   *
-   * celery protocol reference: https://docs.celeryproject.org/en/latest/internals/protocol.html
-   * celery code: https://github.com/celery/celery/blob/4aefccf8a89bffe9dac9a72f2601db1fa8474f5d/celery/app/amqp.py#L307-L464
-   *
-   * @function createTaskMessage
-   *
-   * @returns {String} JSON serialized string of celery task message
-   */
-  public asTaskV1(
-    taskId: string,
-    taskName: string,
-    args?: Array<any>,
-    kwargs?: object
-  ): TaskMessage {
-    const message: TaskMessage = {
-      headers: {},
-      properties: {
-        correlationId: taskId,
-        replyTo: ""
-      },
-      body: {
-        task: taskName,
-        id: taskId,
-        args: args,
-        kwargs: kwargs
-      },
-      sentEvent: null
-    };
+	/**
+	 * create json string representing celery task message. used by Client.publish
+	 *
+	 * celery protocol reference: https://docs.celeryproject.org/en/latest/internals/protocol.html
+	 * celery code: https://github.com/celery/celery/blob/4aefccf8a89bffe9dac9a72f2601db1fa8474f5d/celery/app/amqp.py#L307-L464
+	 *
+	 * @function createTaskMessage
+	 *
+	 * @returns {String} JSON serialized string of celery task message
+	 */
+	public asTaskV1(
+		taskId: string,
+		taskName: string,
+		args?: Array<any>,
+		kwargs?: object
+	): TaskMessage {
+		const message: TaskMessage = {
+			headers: {},
+			properties: {
+				correlationId: taskId,
+				replyTo: "",
+			},
+			body: {
+				task: taskName,
+				id: taskId,
+				args: args,
+				kwargs: kwargs,
+			},
+			sentEvent: null,
+		};
 
-    return message;
-  }
+		return message;
+	}
 
-  /**
-   * createTask
-   * @method Client#createTask
-   * @param {string} name for task name
-   * @returns {Task} task object
-   *
-   * @example
-   * client.createTask('task.add').delay([1, 2])
-   */
-  public createTask(name: string): Task {
-    return new Task(this, name);
-  }
+	/**
+	 * createTask
+	 * @method Client#createTask
+	 * @param {string} name for task name
+	 * @returns {Task} task object
+	 *
+	 * @example
+	 * client.createTask('task.add').delay([1, 2])
+	 */
+	public createTask(name: string): Task {
+		return new Task(this, name);
+	}
 
-  /**
-   * get AsyncResult by task id
-   * @param {string} taskId for task identification.
-   * @returns {AsyncResult} 
-   */
-  public asyncResult(taskId: string): AsyncResult {
-    return new AsyncResult(taskId, this.backend);
-  }
+	/**
+	 * get AsyncResult by task id
+	 * @param {string} taskId for task identification.
+	 * @returns {AsyncResult}
+	 */
+	public asyncResult(taskId: string): AsyncResult {
+		return new AsyncResult(taskId, this.backend);
+	}
 
-  public sendTask(
-    taskName: string,
-    args?: Array<any>,
-    kwargs?: object,
-    taskId?: string
-  ): AsyncResult {
-    taskId = taskId || v4();
-    const message = this.createTaskMessage(taskId, taskName, args, kwargs);
-    this.sendTaskMessage(taskName, message);
+	public sendMessage(
+		taskName: string,
+		args?: Array<any>,
+		kwargs?: object,
+		taskId?: string
+	): undefined {
+		taskId = taskId || v4();
+		const message = this.createTaskMessage(taskId, taskName, args, kwargs);
+		this.sendTaskMessage(taskName, message);
+		return undefined;
+	}
 
-    const result = new AsyncResult(taskId, this.backend);
-    return result;
-  }
+	public sendTask(
+		taskName: string,
+		args?: Array<any>,
+		kwargs?: object,
+		taskId?: string
+	): AsyncResult | undefined {
+		taskId = taskId || v4();
+		const message = this.createTaskMessage(taskId, taskName, args, kwargs);
+		this.sendTaskMessage(taskName, message);
+
+		const result = new AsyncResult(taskId, this.backend);
+		return result;
+	}
 }
