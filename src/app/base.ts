@@ -35,7 +35,10 @@ export default class Base {
 		return this._broker;
 	}
 
-	get backend(): CeleryBackend {
+	get backend(): CeleryBackend | undefined {
+		if (this.backend === "") {
+			return undefined;
+		}
 		if (!this._backend) {
 			this._backend = newCeleryBackend(
 				this.conf.CELERY_BACKEND,
