@@ -1,6 +1,6 @@
 {
   "name": "nodejs-celery",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Celery written in NodeJS",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,7 +37,6 @@
   "devDependencies": {
     "@types/amqplib": "^0.5.17",
     "@types/chai": "^4.2.9",
-    "@types/ioredis": "^5.41.1",
     "@types/mocha": "^7.0.1",
     "@types/sinon": "^9.0.9",
     "@types/uuid": "^3.4.7",
