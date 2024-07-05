@@ -12,7 +12,6 @@ export function createClient(
 	backend = "",
 	queue = "celery"
 ): Client {
-	console.log("Before creating client");
 	return new Client(broker, backend, queue);
 }
 

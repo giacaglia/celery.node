@@ -31,6 +31,8 @@ export default class RedisBroker implements CeleryBroker {
 	 * @param {object} opts the options object for redis connect of ioredis
 	 */
 	constructor(url: string, opts: object) {
+		console.log("New redis with url: ", url);
+		console.log("New redis with opts: ", opts);
 		this.redis = new Redis(url, { ...opts });
 	}
 
@@ -42,9 +44,11 @@ export default class RedisBroker implements CeleryBroker {
 	public isReady(): Promise<void> {
 		return new Promise((resolve, reject) => {
 			if (this.redis.status === "ready") {
+				console.log("Redis is ready");
 				resolve();
 			} else {
 				let handleError; // eslint-disable-line prefer-const
+				console.log("Error with Redis is ready");
 				const handleReady = () => {
 					this.redis.removeListener("error", handleError);
 					resolve();
@@ -81,6 +85,7 @@ export default class RedisBroker implements CeleryBroker {
 		headers: object,
 		properties: object
 	): Promise<number> {
+		console.log("Before creating body");
 		const messageBody = JSON.stringify(body);
 		const contentType = "application/json";
 		const contentEncoding = "utf-8";
