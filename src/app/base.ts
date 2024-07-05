@@ -36,7 +36,7 @@ export default class Base {
 	}
 
 	get backend(): CeleryBackend | undefined {
-		if (this.backend === "") {
+		if (this._backend === "" || this.conf.CELERY_BACKEND === "") {
 			return undefined;
 		}
 		if (!this._backend) {
