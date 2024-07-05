@@ -17,6 +17,7 @@
     "url": "git+https://github.com/giacaglia/celery.node.git"
   },
   "keywords": [
+    "nodejs-celery",
     "node-celery",
     "celery",
     "celery-node",

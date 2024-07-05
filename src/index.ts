@@ -8,11 +8,12 @@ import Worker from "./app/worker";
  * @returns {Client}
  */
 export function createClient(
-  broker = "amqp://",
-  backend = "",
-  queue = "celery"
+	broker = "amqp://",
+	backend = "",
+	queue = "celery"
 ): Client {
-  return new Client(broker, backend, queue);
+	console.log("Before creating client");
+	return new Client(broker, backend, queue);
 }
 
 /**
@@ -22,9 +23,9 @@ export function createClient(
  * @returns {Worker}
  */
 export function createWorker(
-  broker = "amqp://",
-  backend = "amqp://",
-  queue = "celery"
+	broker = "amqp://",
+	backend = "amqp://",
+	queue = "celery"
 ): Worker {
-  return new Worker(broker, backend, queue);
+	return new Worker(broker, backend, queue);
 }
