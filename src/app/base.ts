@@ -1,13 +1,13 @@
 /**
  * writes here Base Parent class of Celery client and worker
- * @author SunMyeong Lee <actumn814@gmail.com>
+ * @author Giuliano
  */
 import { CeleryConf, defaultConf } from "./conf";
 import { newCeleryBroker, CeleryBroker } from "../kombu/brokers";
 import { newCeleryBackend, CeleryBackend } from "../backends";
 
 export default class Base {
-	private _backend: CeleryBackend;
+	private _backend: CeleryBackend | undefined;
 	private _broker: CeleryBroker;
 	conf: CeleryConf;
 
@@ -36,9 +36,6 @@ export default class Base {
 	}
 
 	get backend(): CeleryBackend | undefined {
-		if (this._backend === "" || this.conf.CELERY_BACKEND === "") {
-			return undefined;
-		}
 		if (!this._backend) {
 			this._backend = newCeleryBackend(
 				this.conf.CELERY_BACKEND,
@@ -56,7 +53,7 @@ export default class Base {
 	 * @returns {Promise} promise that continues if backend and broker connected.
 	 */
 	public isReady(): Promise<any> {
-		return Promise.all([this.backend.isReady(), this.broker.isReady()]);
+		return Promise.all([this.backend?.isReady(), this.broker.isReady()]);
 	}
 
 	/**

@@ -41,7 +41,10 @@ function getProtocol(uri: string): string {
 export function newCeleryBackend(
 	CELERY_BACKEND: string,
 	CELERY_BACKEND_OPTIONS: object
-): CeleryBackend {
+): CeleryBackend | undefined {
+	if (CELERY_BACKEND === "") {
+		return undefined;
+	}
 	const brokerProtocol = getProtocol(CELERY_BACKEND);
 	if (["redis", "rediss"].indexOf(brokerProtocol) > -1) {
 		return new RedisBackend(CELERY_BACKEND, CELERY_BACKEND_OPTIONS);
