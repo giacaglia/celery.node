@@ -42,17 +42,14 @@ export default class RedisBroker implements CeleryBroker {
 	public isReady(): Promise<void> {
 		return new Promise((resolve, reject) => {
 			if (this.redis.status === "ready") {
-				console.log("Redis is ready 1");
 				resolve();
 			} else {
 				let handleError; // eslint-disable-line prefer-const
 				const handleReady = () => {
-					console.log("Redis is ready 2");
 					this.redis.removeListener("error", handleError);
 					resolve();
 				};
 				handleError = (err) => {
-					console.log("Redis errored out 3: ", err);
 					this.redis.removeListener("ready", handleReady);
 					reject(err);
 				};
