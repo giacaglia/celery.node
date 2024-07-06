@@ -1,6 +1,6 @@
 {
   "name": "nodejs-celery",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Celery written in NodeJS",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,8 +9,7 @@
     "format": "prettier --write \"{,!(node_modules)/**/}*.{js,ts}\"",
     "format-check": "prettier --check \"{,!(node_modules)/**/}*.{js,ts}\"",
     "dist": "tsc",
-    "test": "mocha -r ts-node/register ./test/**/*",
-    "prepublishOnly": "npm run dist"
+    "test": "mocha -r ts-node/register ./test/**/*"
   },
   "repository": {
     "type": "git",

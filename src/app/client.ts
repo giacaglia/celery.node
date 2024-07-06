@@ -26,7 +26,7 @@ export default class Client extends Base {
 		const { headers, properties, body /*, sentEvent */ } = message;
 
 		const exchange = "";
-		console.log("Before isReady");
+		console.log("Before isReady 1");
 		this.isReady().then(() =>
 			this.broker.publish(
 				body,
@@ -137,11 +137,8 @@ export default class Client extends Base {
 		taskId?: string
 	): undefined {
 		taskId = taskId || v4();
-		console.log("Before creating message");
 		const message = this.createTaskMessage(taskId, taskName, args, kwargs);
-		console.log("After creating message");
 		this.sendTaskMessage(taskName, message);
-		console.log("After sending message");
 		return undefined;
 	}
 
