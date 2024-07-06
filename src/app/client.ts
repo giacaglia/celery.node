@@ -26,18 +26,6 @@ export default class Client extends Base {
 		const { headers, properties, body /*, sentEvent */ } = message;
 
 		const exchange = "";
-		console.log(
-			"Sending message with body:",
-			body,
-			", exchange:",
-			exchange,
-			", queue:",
-			this.conf.CELERY_QUEUE,
-			", headers:",
-			headers,
-			", properties:",
-			properties
-		);
 		this.isReady().then(() =>
 			this.broker.publish(
 				body,
