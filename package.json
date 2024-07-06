@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "amqplib": "^0.8.0",
-    "ioredis": "^5.41.1",
+    "ioredis": "^5.4.1",
     "uuid": "^3.3.2"
   }
 }

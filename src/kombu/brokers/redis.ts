@@ -69,9 +69,9 @@ export default class RedisBroker implements CeleryBroker {
 	 * @method RedisBroker#disconnect
 	 * @returns {Promise} promises that continues if redis disconnected.
 	 */
-	public disconnect(): Promise<string> {
+	public disconnect(): Promise<string | void> {
 		this.closing = true;
-		return Promise.all(this.channels).then(() => this.redis.quit());
+		return Promise.all(this.channels).then(() => this.redis.disconnect());
 	}
 
 	/**
@@ -86,7 +86,6 @@ export default class RedisBroker implements CeleryBroker {
 		headers: object,
 		properties: object
 	): Promise<number> {
-		console.log("Before creating body");
 		const messageBody = JSON.stringify(body);
 		const contentType = "application/json";
 		const contentEncoding = "utf-8";
@@ -106,9 +105,8 @@ export default class RedisBroker implements CeleryBroker {
 				...properties,
 			},
 		};
-		console.log("Before pushing message: ", message);
 
-		return this.redis.lpush(routingKey, JSON.stringify(message));
+		return (this.redis as any).lpush(routingKey, JSON.stringify(message));
 	}
 
 	/**
@@ -187,7 +185,7 @@ export default class RedisBroker implements CeleryBroker {
 	 * @return {Promise}
 	 */
 	private receiveOne(queue: string): Promise<Message> {
-		return this.redis.brpop(queue, "5").then((result) => {
+		return (this.redis as any).brpop(queue, "5").then((result) => {
 			if (!result) {
 				return null;
 			}

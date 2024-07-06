@@ -14,7 +14,7 @@ const keyPrefix = "celery-task-meta-";
  * @exports
  */
 export default class RedisBackend implements CeleryBackend {
-	redis: Redis;
+	redis: any;
 
 	/**
 	 * Redis backend class
